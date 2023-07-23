@@ -1,8 +1,8 @@
 use std::error::Error;
 use tokio::io::{AsyncBufReadExt, BufReader};
-use tokio::net::TcpStream;
-use tungstenite::protocol::Message;
-use url::Url;
+use tokio_tungstenite::tungstenite::protocol::url::Url;
+use tokio_tungstenite::tungstenite::protocol::Message;
+use tokio_tungstenite::connect_async;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -22,7 +22,7 @@ struct Channel {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let url = Url::parse("wss://ws-feed.exchange.coinbase.com")?;
-    let (ws_stream, _) = tokio_tungstenite::connect_async(url).await?;
+    let (ws_stream, _) = connect_async(url).await?;
     let (write, read) = ws_stream.split();
 
     let subscription_data = SubscriptionData {
